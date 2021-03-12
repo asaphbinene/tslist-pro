@@ -64,27 +64,15 @@ button:active {
     background: #ff0062;
     height: 3.5rem;
     display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.projects ul {
-    list-style: none;
-    margin: 0;
-    padding: 1rem;
-}
-
-.project li p {
-    margin: 0;
-}
-
-.droppable {
-    background: #ffe3ee;
-}
-
-#finished-projects {
+#finishid-projects {
     border-color: #0044ff;
 }
 
-#finished-projects header {
+#finishid-projects header {
     background: #0044ff;
 }
 
@@ -96,7 +84,7 @@ button:active {
 .projects ul {
     list-style: none;
     margin: 0;
-    margin: 1rem;
+    padding: 1rem;
 }
 
 .projects li{
@@ -107,11 +95,24 @@ button:active {
 
 .projects li h2 {
     color: #ff0062;
+    margin: 0.5rem;
+}
+
+#finished-projects li h2{
+    border-color: #0044ff;
 }
 
 .projects li h3 {
     color: #575757;
     font-size: 1rem;
+}
+
+.project li p {
+    margin: 0;
+} 
+
+.droppable {
+    background: #ffe3ee;
 }
 
 #finished-projects .droppable { 
