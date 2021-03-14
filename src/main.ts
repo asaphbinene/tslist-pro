@@ -12,15 +12,23 @@ class Project {
 }
 
 // The state and record of the portfolio project
-type Listener = (itms: Project[]) => void;
+type Listener<T> = (itms: T[]) => void;
 
-class PortfolioState {
-    private listeners: Listener[] = [];
+class State<T> {
+    protected listeners: Listener<T>[] = [];
+
+    addListener(listenerFn: Listener<T>) {
+        this.listeners.push(listenerFn);
+    }
+}
+
+class PortfolioState extends State<Project> {
+
     private projects: Project[] = [];
     private static instance: PortfolioState;
 
     private constructor(){
-
+        super()
     }
 
     addProject(title: string, description: string, numberOfMembers: number){
@@ -43,10 +51,6 @@ class PortfolioState {
         }
         this.instance = new PortfolioState();
         return this.instance;
-    }
-
-    addListener(listenerFn: Listener) {
-        this.listeners.push(listenerFn);
     }
 }
 
@@ -141,6 +145,26 @@ abstract class Component <T extends HTMLElement, U extends HTMLElement>{
     abstract configure(): void;
     abstract renderContent(): void;
 }
+//Project Items class
+class ProjectItem extends Component<HTMLUListElement, HTMLLIElement>{
+    private project: Project;
+
+    constructor(hostId: string, project: Project){
+        super('single-project', hostId, false, project.id);
+        this.project =  project;
+
+        this.configure();
+        this.renderContent();
+    }
+
+    configure(){}
+    renderContent() {
+        this.element.querySelector('h2')!.textContent = this.project.title;
+        this.element.querySelector('h3')!.textContent = this.project.people.toString();
+        this.element.querySelector('p')!.textContent = this.project.description;
+    }
+
+}
 
 //ProjectList 
 class ProjectList extends Component <HTMLDivElement, HTMLElement>{
@@ -177,9 +201,7 @@ class ProjectList extends Component <HTMLDivElement, HTMLElement>{
         const listElement = document.getElementById(`${this.type}-projects-list`)! as HTMLUListElement;
         listElement.innerHTML = '';
         for (const prjItem of this.assignedProjects){
-            const listItem = document.createElement('li');
-            listItem.textContent = prjItem.title;
-            listElement.appendChild(listItem);
+           new ProjectItem(this.element.querySelector('ul')!.id, prjItem);
         }
     }
 }
