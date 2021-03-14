@@ -55,25 +55,12 @@ button:active {
     background-color: #a80041;
 }
 
-.projects {
-    margin: 1rem;
-    border: 1px solid #ff0062;
-}
-
-.projects header {
-    background: #ff0062;
-    height: 3.5rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
 #finishid-projects {
     border-color: #0044ff;
 }
 
 #finishid-projects header {
-    background: #0044ff;
+    background-color: #0044ff;
 }
 
 .projects h2 {
@@ -91,9 +78,10 @@ button:active {
     box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.26);
     padding: 1rem;
     margin: 1rem;
+    background: #fff5f9;
 }
 
-.projects li h2 {
+#active-projects li h2 {
     color: #ff0062;
     margin: 0.5rem;
 }
@@ -124,4 +112,17 @@ button:active {
     padding: 1rem;
     border: 1px solid #ff0062;
     background: #f7f7f7;
+}
+
+.projects {
+    margin: 1rem;
+    border: 1px solid #ff0062;
+}
+
+.projects header {
+    background: #ff0062;
+    height: 3.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

@@ -33,19 +33,29 @@ class PortfolioState extends State {
         super();
         this.projects = [];
     }
-    addProject(title, description, numberOfMembers) {
-        const newProject = new Project(Math.random().toString(), title, description, numberOfMembers, ProjectStatus.Active);
-        this.projects.push(newProject);
-        for (const listenerFn of this.listeners) {
-            listenerFn(this.projects.slice());
-        }
-    }
     static getInstance() {
         if (this.instance) {
             return this.instance;
         }
         this.instance = new PortfolioState();
         return this.instance;
+    }
+    addProject(title, description, numberOfMembers) {
+        const newProject = new Project(Math.random().toString(), title, description, numberOfMembers, ProjectStatus.Active);
+        this.projects.push(newProject);
+        this.updateListeners();
+    }
+    switchProjectStatus(projectId, newStatus) {
+        const project = this.projects.find(prj => prj.id === projectId);
+        if (project && project.status !== newStatus) {
+            project.status = newStatus;
+            this.updateListeners();
+        }
+    }
+    updateListeners() {
+        for (const listenerFn of this.listeners) {
+            listenerFn(this.projects.slice());
+        }
     }
 }
 const portfolioState = PortfolioState.getInstance();
@@ -73,7 +83,7 @@ function validate(validatableInput) {
     return isValid;
 }
 // Autobind decorator
-function autobind(_, _2, descriptor) {
+function autobind(id, _2, descriptor) {
     const originalMethod = descriptor.value;
     const adjDescriptor = {
         configurable: true,
@@ -108,13 +118,38 @@ class ProjectItem extends Component {
         this.configure();
         this.renderContent();
     }
-    configure() { }
+    get members() {
+        if (this.project.people === 1) {
+            return 'One member only assigned';
+        }
+        else {
+            return `${this.project.people} members assigned`;
+        }
+    }
+    //Defining drag and drop behaviour
+    dragStartHandler(event) {
+        event.dataTransfer.setData('text/plain', this.project.id);
+        event.dataTransfer.effectAllowed = 'move';
+    }
+    dragEndHandler(event) {
+        console.log('DragEnd');
+    }
+    configure() {
+        this.element.addEventListener('dragstart', this.dragStartHandler);
+        this.element.addEventListener('dragend', this.dragEndHandler);
+    }
     renderContent() {
         this.element.querySelector('h2').textContent = this.project.title;
-        this.element.querySelector('h3').textContent = this.project.people.toString();
+        this.element.querySelector('h3').textContent = this.members;
         this.element.querySelector('p').textContent = this.project.description;
     }
 }
+__decorate([
+    autobind //omitting the autobind may cause the lost the declaration the id make it undefined
+], ProjectItem.prototype, "dragStartHandler", null);
+__decorate([
+    autobind
+], ProjectItem.prototype, "dragEndHandler", null);
 //ProjectList 
 class ProjectList extends Component {
     constructor(type) {
@@ -124,7 +159,25 @@ class ProjectList extends Component {
         this.configure();
         this.renderContent();
     }
+    dragOverHandler(event) {
+        if (event.dataTransfer && event.dataTransfer.types[0] === 'text/plain') {
+            event.preventDefault();
+            const listEl = this.element.querySelector('ul');
+            listEl.classList.add('droppable');
+        }
+    }
+    dropHandler(event) {
+        const prjId = event.dataTransfer.getData('text/plain');
+        portfolioState.switchProjectStatus(prjId, this.type === 'active' ? ProjectStatus.Active : ProjectStatus.Finished);
+    }
+    dragLeaveHandler(event) {
+        const listEl = this.element.querySelector('ul');
+        listEl.classList.remove('droppable');
+    }
     configure() {
+        this.element.addEventListener('dragover', this.dragOverHandler);
+        this.element.addEventListener('dragleave', this.dragLeaveHandler);
+        this.element.addEventListener('drop', this.dropHandler);
         portfolioState.addListener((projects) => {
             const relevantProjects = projects.filter(prj => {
                 if (this.type === 'active') {
@@ -150,6 +203,15 @@ class ProjectList extends Component {
         }
     }
 }
+__decorate([
+    autobind
+], ProjectList.prototype, "dragOverHandler", null);
+__decorate([
+    autobind
+], ProjectList.prototype, "dropHandler", null);
+__decorate([
+    autobind
+], ProjectList.prototype, "dragLeaveHandler", null);
 class ProjectInput extends Component {
     constructor() {
         super('project-input', 'main', true, 'user-input');
