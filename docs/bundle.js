@@ -1,13 +1,20 @@
-"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var Main;
-(function (Main) {
-    //component Base class
+define("main", ["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    new module_1.ProjectInput();
+    new module_2.ProjectList('active');
+    new module_2.ProjectList('finished');
+});
+define("bases/base-component", ["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.Component = void 0;
     class Component {
         constructor(templateId, hostElementId, insertAtStart, newElementId) {
             this.templateElement = document.getElementById(templateId);
@@ -23,10 +30,12 @@ var Main;
             this.hostElement.insertAdjacentElement(insertAtBeginning ? 'afterbegin' : 'beforeend', this.element);
         }
     }
-    Main.Component = Component;
-})(Main || (Main = {}));
-var Main;
-(function (Main) {
+    exports.Component = Component;
+});
+define("decorators/autobind", ["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.autobind = void 0;
     // Autobind decorator
     function autobind(id, _2, descriptor) {
         const originalMethod = descriptor.value;
@@ -39,10 +48,12 @@ var Main;
         };
         return adjDescriptor;
     }
-    Main.autobind = autobind;
-})(Main || (Main = {}));
-var Main;
-(function (Main) {
+    exports.autobind = autobind;
+});
+define("utils/validations", ["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.validate = void 0;
     function validate(validatableInput) {
         let isValid = true;
         if (validatableInput.required) {
@@ -66,12 +77,33 @@ var Main;
         }
         return isValid;
     }
-    Main.validate = validate;
-})(Main || (Main = {}));
-//<reference path="../models/drag-drop.ts" />
-//<reference path="../models/project.ts" />
-var Main;
-(function (Main) {
+    exports.validate = validate;
+});
+define("models/project", ["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.Project = exports.ProjectStatus = void 0;
+    //Declaring and defining a single project
+    var ProjectStatus;
+    (function (ProjectStatus) {
+        ProjectStatus[ProjectStatus["Active"] = 0] = "Active";
+        ProjectStatus[ProjectStatus["Finished"] = 1] = "Finished";
+    })(ProjectStatus = exports.ProjectStatus || (exports.ProjectStatus = {}));
+    class Project {
+        constructor(id, title, description, people, status) {
+            this.id = id;
+            this.title = title;
+            this.description = description;
+            this.people = people;
+            this.status = status;
+        }
+    }
+    exports.Project = Project;
+});
+define("states/portfolio-state", ["require", "exports", "models/project"], function (require, exports, project_js_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.portfolioState = exports.PortfolioState = void 0;
     class State {
         constructor() {
             this.listeners = [];
@@ -93,7 +125,7 @@ var Main;
             return this.instance;
         }
         addProject(title, description, numberOfMembers) {
-            const newProject = new Main.Project(Math.random().toString(), title, description, numberOfMembers, Main.ProjectStatus.Active);
+            const newProject = new project_js_1.Project(Math.random().toString(), title, description, numberOfMembers, project_js_1.ProjectStatus.Active);
             this.projects.push(newProject);
             this.updateListeners();
         }
@@ -110,16 +142,14 @@ var Main;
             }
         }
     }
-    Main.PortfolioState = PortfolioState;
-    Main.portfolioState = PortfolioState.getInstance();
-})(Main || (Main = {}));
-///<reference path="./base-component.ts" />
-///<reference path="../decorators/autobind.ts" />
-///<reference path="../utils/validations.ts" />
-///<reference path="../states/portfolio-state.ts" />
-var Main;
-(function (Main) {
-    class ProjectInput extends Main.Component {
+    exports.PortfolioState = PortfolioState;
+    exports.portfolioState = PortfolioState.getInstance();
+});
+define("bases/project-input", ["require", "exports", "bases/base-component", "decorators/autobind", "utils/validations", "states/portfolio-state"], function (require, exports, base_component_js_1, autobind_js_1, validations_js_1, portfolio_state_js_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ProjectInput = void 0;
+    class ProjectInput extends base_component_js_1.Component {
         constructor() {
             super('project-input', 'main', true, 'user-input');
             //Assigning the attributes and input selectors
@@ -154,9 +184,9 @@ var Main;
                 max: 5
             };
             //Other way of validation 
-            if (!Main.validate(titleValidatable) ||
-                !Main.validate(descriptionValidatable) ||
-                !Main.validate(peopleValidatable)) {
+            if (!validations_js_1.validate(titleValidatable) ||
+                !validations_js_1.validate(descriptionValidatable) ||
+                !validations_js_1.validate(peopleValidatable)) {
                 //console.log(enteredTitle + ' '+ enteredDescription+ ' ' + enteredPeople);
                 alert('Invalid input, please try again!');
                 return;
@@ -176,124 +206,27 @@ var Main;
             if (Array.isArray(userInput)) {
                 const [title, desc, people] = userInput;
                 console.log(title, desc, people);
-                Main.portfolioState.addProject(title, desc, people);
+                portfolio_state_js_1.portfolioState.addProject(title, desc, people);
                 this.clearInputs();
             }
         }
     }
     __decorate([
-        Main.autobind
+        autobind_js_1.autobind
     ], ProjectInput.prototype, "submitHandler", null);
-    Main.ProjectInput = ProjectInput;
-})(Main || (Main = {}));
-var Main;
-(function (Main) {
-    //Declaring and defining a single project
-    let ProjectStatus;
-    (function (ProjectStatus) {
-        ProjectStatus[ProjectStatus["Active"] = 0] = "Active";
-        ProjectStatus[ProjectStatus["Finished"] = 1] = "Finished";
-    })(ProjectStatus = Main.ProjectStatus || (Main.ProjectStatus = {}));
-    class Project {
-        constructor(id, title, description, people, status) {
-            this.id = id;
-            this.title = title;
-            this.description = description;
-            this.people = people;
-            this.status = status;
-        }
-    }
-    Main.Project = Project;
-})(Main || (Main = {}));
-///<reference path="./base-component.ts" />
-///<reference path="../decorators/autobind.ts" />
-///<reference path="../states/portfolio-state.ts" />
-///<reference path="../models/drag-drop.ts" />
-///<reference path="../models/project.ts" />
-///<reference path>
-var Main;
-(function (Main) {
-    //ProjectList 
-    class ProjectList extends Main.Component {
-        constructor(type) {
-            super('project-list', 'main', false, `${type}-projects`);
-            this.type = type;
-            this.assignedProjects = [];
-            this.configure();
-            this.renderContent();
-        }
-        dragOverHandler(event) {
-            if (event.dataTransfer && event.dataTransfer.types[0] === 'text/plain') {
-                event.preventDefault();
-                const listEl = this.element.querySelector('ul');
-                listEl.classList.add('droppable');
-            }
-        }
-        dropHandler(event) {
-            const prjId = event.dataTransfer.getData('text/plain');
-            Main.portfolioState.switchProjectStatus(prjId, this.type === 'active' ? Main.ProjectStatus.Active : Main.ProjectStatus.Finished);
-        }
-        dragLeaveHandler(event) {
-            const listEl = this.element.querySelector('ul');
-            listEl.classList.remove('droppable');
-        }
-        configure() {
-            this.element.addEventListener('dragover', this.dragOverHandler);
-            this.element.addEventListener('dragleave', this.dragLeaveHandler);
-            this.element.addEventListener('drop', this.dropHandler);
-            Main.portfolioState.addListener((projects) => {
-                const relevantProjects = projects.filter(prj => {
-                    if (this.type === 'active') {
-                        return prj.status === Main.ProjectStatus.Active;
-                    }
-                    return prj.status === Main.ProjectStatus.Finished;
-                });
-                this.assignedProjects = relevantProjects;
-                this.renderProjects();
-            });
-        }
-        ;
-        renderContent() {
-            const listId = `${this.type}-projects-list`;
-            this.element.querySelector('ul').id = listId;
-            this.element.querySelector('h2').textContent = this.type.toUpperCase() + ' PROJECTS';
-        }
-        renderProjects() {
-            const listElement = document.getElementById(`${this.type}-projects-list`);
-            listElement.innerHTML = '';
-            for (const prjItem of this.assignedProjects) {
-                new Main.ProjectItem(this.element.querySelector('ul').id, prjItem);
-            }
-        }
-    }
-    __decorate([
-        Main.autobind
-    ], ProjectList.prototype, "dragOverHandler", null);
-    __decorate([
-        Main.autobind
-    ], ProjectList.prototype, "dropHandler", null);
-    __decorate([
-        Main.autobind
-    ], ProjectList.prototype, "dragLeaveHandler", null);
-    Main.ProjectList = ProjectList;
-})(Main || (Main = {}));
-///<reference path="./bases/project-input.ts" />
-//<reference path="./bases/project-items.ts" />
-///<reference path="./bases/project-list.ts" />
-var Main;
-(function (Main) {
-    new Main.ProjectInput();
-    new Main.ProjectList('active');
-    new Main.ProjectList('finished');
-})(Main || (Main = {}));
-///<reference path="./base-component.ts" />
-///<reference path="../decorators/autobind.ts" />
-///<reference path="../models/drag-drop.ts" />
-///<reference path="../models/project.ts" />
-var Main;
-(function (Main) {
+    exports.ProjectInput = ProjectInput;
+});
+define("models/drag-drop", ["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+});
+define("bases/project-items", ["require", "exports", "bases/base-component", "decorators/autobind"], function (require, exports, base_component_js_2, autobind_js_2) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ProjectItem = void 0;
+    //namespace Main {
     //Project Items class
-    class ProjectItem extends Main.Component {
+    class ProjectItem extends base_component_js_2.Component {
         constructor(hostId, project) {
             super('single-project', hostId, false, project.id);
             this.project = project;
@@ -327,11 +260,81 @@ var Main;
         }
     }
     __decorate([
-        Main.autobind //omitting the autobind may cause the lost the declaration the id make it undefined
+        autobind_js_2.autobind //omitting the autobind may cause the lost the declaration the id make it undefined
     ], ProjectItem.prototype, "dragStartHandler", null);
     __decorate([
-        Main.autobind
+        autobind_js_2.autobind
     ], ProjectItem.prototype, "dragEndHandler", null);
-    Main.ProjectItem = ProjectItem;
-})(Main || (Main = {}));
+    exports.ProjectItem = ProjectItem;
+});
+define("bases/project-list", ["require", "exports", "bases/base-component", "bases/project-items", "decorators/autobind", "states/portfolio-state", "models/project"], function (require, exports, base_component_js_3, project_items_js_1, autobind_js_3, portfolio_state_js_2, project_js_2) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ProjectList = void 0;
+    ///<reference path>
+    //namespace Main {
+    //ProjectList 
+    class ProjectList extends base_component_js_3.Component {
+        constructor(type) {
+            super('project-list', 'main', false, `${type}-projects`);
+            this.type = type;
+            this.assignedProjects = [];
+            this.configure();
+            this.renderContent();
+        }
+        dragOverHandler(event) {
+            if (event.dataTransfer && event.dataTransfer.types[0] === 'text/plain') {
+                event.preventDefault();
+                const listEl = this.element.querySelector('ul');
+                listEl.classList.add('droppable');
+            }
+        }
+        dropHandler(event) {
+            const prjId = event.dataTransfer.getData('text/plain');
+            portfolio_state_js_2.portfolioState.switchProjectStatus(prjId, this.type === 'active' ? project_js_2.ProjectStatus.Active : project_js_2.ProjectStatus.Finished);
+        }
+        dragLeaveHandler(event) {
+            const listEl = this.element.querySelector('ul');
+            listEl.classList.remove('droppable');
+        }
+        configure() {
+            this.element.addEventListener('dragover', this.dragOverHandler);
+            this.element.addEventListener('dragleave', this.dragLeaveHandler);
+            this.element.addEventListener('drop', this.dropHandler);
+            portfolio_state_js_2.portfolioState.addListener((projects) => {
+                const relevantProjects = projects.filter(prj => {
+                    if (this.type === 'active') {
+                        return prj.status === project_js_2.ProjectStatus.Active;
+                    }
+                    return prj.status === project_js_2.ProjectStatus.Finished;
+                });
+                this.assignedProjects = relevantProjects;
+                this.renderProjects();
+            });
+        }
+        ;
+        renderContent() {
+            const listId = `${this.type}-projects-list`;
+            this.element.querySelector('ul').id = listId;
+            this.element.querySelector('h2').textContent = this.type.toUpperCase() + ' PROJECTS';
+        }
+        renderProjects() {
+            const listElement = document.getElementById(`${this.type}-projects-list`);
+            listElement.innerHTML = '';
+            for (const prjItem of this.assignedProjects) {
+                new project_items_js_1.ProjectItem(this.element.querySelector('ul').id, prjItem);
+            }
+        }
+    }
+    __decorate([
+        autobind_js_3.autobind
+    ], ProjectList.prototype, "dragOverHandler", null);
+    __decorate([
+        autobind_js_3.autobind
+    ], ProjectList.prototype, "dropHandler", null);
+    __decorate([
+        autobind_js_3.autobind
+    ], ProjectList.prototype, "dragLeaveHandler", null);
+    exports.ProjectList = ProjectList;
+});
 //# sourceMappingURL=bundle.js.map
