@@ -1,5 +1,5 @@
-import { ProjectInput } from "./bases/project-input.js";
-import { ProjectList } from "./bases/project-list.js";
+import { ProjectInput } from "./bases/project-input";
+import { ProjectList } from "./bases/project-list";
 
 new ProjectInput();
 new ProjectList('active');

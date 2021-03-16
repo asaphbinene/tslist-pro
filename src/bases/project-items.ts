@@ -1,11 +1,11 @@
 //<reference path="./base-component.ts" />
-import { Component } from "./base-component.js";
+import { Component } from "./base-component";
 //<reference path="../decorators/autobind.ts" />
-import { autobind } from "../decorators/autobind.js";
+import { autobind } from "../decorators/autobind";
 //<reference path="../models/drag-drop.ts" />
-import { Draggable } from "../models/drag-drop.js";
+import { Draggable } from "../models/drag-drop";
 //<reference path="../models/project.ts" />
-import { Project, ProjectStatus } from "../models/project.js";
+import { Project, ProjectStatus } from "../models/project";
 
 //namespace Main {
 

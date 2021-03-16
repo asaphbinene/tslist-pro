@@ -1,6 +1,6 @@
 //<reference path="../models/drag-drop.ts" />
 //<reference path="../models/project.ts" />
-import { Project, ProjectStatus } from "../models/project.js"
+import { Project, ProjectStatus } from "../models/project"
 
 
 // The state and record of the portfolio project

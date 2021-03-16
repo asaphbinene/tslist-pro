@@ -1,14 +1,14 @@
 //<reference path="./base-component.ts" />
-import { Component } from "./base-component.js";
-import { ProjectItem } from "./project-items.js";
+import { Component } from "./base-component";
+import { ProjectItem } from "./project-items";
 //<reference path="../decorators/autobind.ts" /> namaspace mode
-import { autobind } from "../decorators/autobind.js";
+import { autobind } from "../decorators/autobind";
 //<reference path="../states/portfolio-state.ts" />
-import { portfolioState } from "../states/portfolio-state.js";
+import { portfolioState } from "../states/portfolio-state";
 //<reference path="../models/drag-drop.ts" />
-import { DragTarget } from "../models/drag-drop.js";
+import { DragTarget } from "../models/drag-drop";
 //<reference path="../models/project.ts" />
-import { Project, ProjectStatus } from "../models/project.js"
+import { Project, ProjectStatus } from "../models/project"
 
 
 ///<reference path>
