@@ -5,44 +5,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Protfolio Manager</title>
-    <link rel="stylesheet" href="main.css" />
-    <script type="module" src="./docs/bundle.js"></script>
+    <link rel="stylesheet" href="./main.css" />
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCdQy-gZ5PWLJe5yBNaZ25x7iktXV87M2k"
+      async
+    ></script>
+    <script type="module" src="./docs/bundle.js" defer></script>
 </head>
 <body>
-    <template id="project-input">
-        <form>
-            <div class="form-control">
-                <label for="title">Title</label>
-                <input type="text" name="" id="title">
-            </div>
-            <div class="form-control">
-                <label for="description">description</label>
-                <textarea id="description" rows="3"></textarea>
-            </div>
-            <div class="form-control">
-                <label for="people">People</label>
-                <input type="number" name="" id="people" step="1" min="0" max="5">
-            </div>
-            <button type="submit">ADD Project</button>
-        </form>
-    </template>
-    <template id="single-project">
-        <li draggable="true">
-            <h2></h2>
-            <h3></h3>
-            <p></p>
-        </li>
-    </template>
-    <template id="project-list">
-        <section class="projects">
-            <header>
-                <h2>
-                </h2>
-            </header>
-            <ul>
-            </ul>
-        </section>
-    </template>
-    <div id="main"></div>
+    <div id="map">Please Enter an Address here</div>
+    <form>
+        <input type="text" id="address">
+        <button type="submit">DISPLAY MAP</button>
+    </form>
 </body>
 </html>
