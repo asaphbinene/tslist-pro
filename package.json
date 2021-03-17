@@ -1,7 +1,7 @@
 {
-  "name": "tsmap-find",
+  "name": "tslist-pro",
   "version": "1.0.0",
-  "description": "A map display after typing an address",
+  "description": "",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -19,8 +19,5 @@
     "webpack": "^5.26.0",
     "webpack-cli": "^4.5.0",
     "webpack-dev-server": "^3.11.2"
-  },
-  "dependencies": {
-    "axios": "^0.21.1"
   }
 }
